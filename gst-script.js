@@ -27,6 +27,11 @@ function fillGstForm() {
                 usernameInput.dispatchEvent(new Event('change', { bubbles: true }));
                 passwordInput.dispatchEvent(new Event('change', { bubbles: true }));
 
+                // GST Portal uses AngularJS (ng-model, etc.)
+                // Dispatching blur helps trigger validation
+                usernameInput.dispatchEvent(new Event('blur', { bubbles: true }));
+                passwordInput.dispatchEvent(new Event('blur', { bubbles: true }));
+
                 console.log("Ezkar QuickLogin: Successfully injected credentials.");
 
                 // Focus the captcha field for convenience
