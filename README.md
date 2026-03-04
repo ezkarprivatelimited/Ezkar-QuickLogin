@@ -1,32 +1,26 @@
 # Ezkar QuickLogin
 
-A Chrome extension designed to streamline logging into the GST portal directly from the Ezkar dashboard.
+An internal Chrome extension built specifically for the Ezkar Dashboard (`*.ezkar.in`). It bridges the gap between our internal dashboard and the official GST portal by securely passing dynamically decrypted credentials between tabs, allowing for seamless one-click logins.
 
-## What it does
+## Features
 
-This extension bridges the gap between our internal dashboard and the official GST portal. When a user clicks "Login to GST" on an assessee's profile, the extension:
+- **Push-to-Login:** Clicking the `Login to GST` button on the Assessee Details modal opens the GST portal and autofills the username and password.
+- **AngularJS Support:** The extension natively dispatches `blur`, `input`, and `change` events during credential injection to properly trigger the GST portal's AngularJS validation state.
+- **Session-Based Security:** Credentials are never written to disk (`localStorage` or `chrome.storage`). They are held entirely in the background Service Worker's active memory.
+- **Auto Cleanup:** If the user clicks login but closes the target tab, or if injection fails, credentials are automatically wiped from memory after 30 seconds.
+- **Status UI:** Clicking the extension icon in the Chrome toolbar opens a popup UI displaying the current credential state (Ready/Idle) and the target username, giving users the ability to cancel an accidental auto-login.
 
-1. Securely receives the GST login credentials from the dashboard.
-2. Opens a new tab to the official GST portal login page.
-3. Automatically injects the Username and Password into the login form.
-4. Leaves the cursor in the CAPTCHA field so the user can quickly type it and hit enter.
+## Architecture
 
-## Security Considerations
-
-- **No persistent storage:** Credentials are never saved to `localStorage`, `sessionStorage`, or `chrome.storage`. They are held in memory only for the fraction of a second it takes to pass them from the Dashboard to the GST portal.
-- **Scope restriction:** The extension only has permission to run on our specific internal dashboard domain and the official `services.gst.gov.in` domain.
-- **Internal Use Only:** This extension is meant to be loaded locally as an unpacked extension on employee machines and will not be published to the Chrome Web Store.
+1. **Host App (`dashboard-script.js`)**: Runs on `localhost:5173` and `*.ezkar.in`. Listens for a custom window event (`AUTO_LOGIN_GST`) dispatched by our React frontend and forwards the payload to the background script.
+2. **Orchestrator (`background.js`)**: Actively manages the target URL tab creation, holds the decrypted credentials in memory, and responds to polling from the GST script and the UI popup.
+3. **Injector (`gst-script.js`)**: Wakes up only on `services.gst.gov.in`. Requests payload from the background script, identifies the Angular inputs (`#username`, `#user_pass`), injects the values, forces Angular rendering, and focuses the `#captcha` input.
 
 ## Installation (Developer Mode)
 
-1. Open Google Chrome and navigate to `chrome://extensions/`.
-2. Toggle the **Developer mode** switch in the top right corner.
-3. Click the **Load unpacked** button.
-4. Select the `Ezkar-QuickLogin` directory.
-5. The extension should now be visible in your list of extensions.
+Because this extension operates on sensitive decrypted credentials, it is **not published** to the Chrome Web Store. It must be sideloaded.
 
-## Architecture Flow
-
-- **Dashboard Content Script:** Listens for a specific custom event (`AUTO_LOGIN_GST`) emitted by the React frontend and passes the payload to the background service worker.
-- **Background Script:** Orchestrates the flow. It opens the designated GST portal URL, temporarily stores the credentials in memory, and waits for the new tab to be fully loaded.
-- **Portal Content Script:** Wakes up on the GST portal, retrieves the credentials from the background script, fills in the login form, and immediately wipes the credentials from background memory.
+1. Clone or download this directory.
+2. Open Chrome and navigate to `chrome://extensions/`.
+3. Toggle the **Developer mode** switch in the top right.
+4. Click **Load unpacked** and select the `Ezkar-QuickLogin` folder.
