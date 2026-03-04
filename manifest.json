@@ -10,7 +10,7 @@
   ],
   "host_permissions": [
     "http://localhost:5173/*",
-    "https://*.ezkar.com/*",
+    "https://*.ezkar.in/*",
     "https://services.gst.gov.in/*"
   ],
   "action": {
@@ -24,7 +24,7 @@
     {
       "matches": [
         "http://localhost:5173/*",
-        "https://*.ezkar.com/*"
+        "https://*.ezkar.in/*"
       ],
       "js": [
         "dashboard-script.js"
