@@ -12,7 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 statusBadge.textContent = 'Ready';
                 statusBadge.className = 'status-badge ready';
 
-                detailsMsg.innerHTML = 'Credentials safely loaded in memory.<br/>Waiting for the GST Portal tab to open...';
+                const portalName = response.portal === 'IT' ? 'Income Tax' : 'GST';
+
+                detailsMsg.innerHTML = `Credentials safely loaded in memory.<br/>Waiting for the <strong>${portalName} Portal</strong> tab to open...`;
 
                 usernameCard.classList.add('visible');
                 usernameVal.textContent = response.username;
@@ -31,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 statusBadge.textContent = 'Standing By';
                 statusBadge.className = 'status-badge idle';
 
-                detailsMsg.innerHTML = 'No pending credentials found. Please click <strong>"Login to GST"</strong> from your Ezkar Dashboard to initiate auto-login.';
+                detailsMsg.innerHTML = 'No pending credentials found. Please click <strong>"Login"</strong> from your Ezkar Dashboard to initiate auto-login.';
 
                 usernameCard.classList.remove('visible');
                 usernameVal.textContent = '---';

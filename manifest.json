@@ -11,7 +11,8 @@
   "host_permissions": [
     "http://localhost:5173/*",
     "https://*.ezkar.in/*",
-    "https://services.gst.gov.in/*"
+    "https://services.gst.gov.in/*",
+    "https://eportal.incometax.gov.in/*"
   ],
   "action": {
     "default_popup": "popup.html",
@@ -37,6 +38,15 @@
       ],
       "js": [
         "gst-script.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://eportal.incometax.gov.in/iec/foservices/*"
+      ],
+      "js": [
+        "it-script.js"
       ],
       "run_at": "document_idle"
     }

@@ -7,8 +7,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'INITIATE_GST_LOGIN') {
         const { username, password } = message.payload;
 
-        // Store temporarily
-        pendingLogin = { username, password };
+        // Store temporarily with portal identifier
+        pendingLogin = { username, password, portal: 'GST' };
         console.log("Ezkar QuickLogin: Received credentials, opening GST portal...");
 
         // Open the new tab
@@ -29,11 +29,33 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({ success: true });
     }
 
+    if (message.action === 'INITIATE_IT_LOGIN') {
+        const { username, password } = message.payload;
+
+        // Store temporarily with portal identifier
+        pendingLogin = { username, password, portal: 'IT' };
+        console.log("Ezkar QuickLogin: Received credentials, opening IT portal...");
+
+        // Open the new tab
+        chrome.tabs.create({ url: 'https://eportal.incometax.gov.in/iec/foservices/#/login' });
+
+        // Auto-clear
+        setTimeout(() => {
+            if (pendingLogin) {
+                console.warn("Ezkar QuickLogin: Timeout reached. Wiping pending credentials.");
+                pendingLogin = null;
+            }
+        }, 30000);
+
+        sendResponse({ success: true });
+    }
+
     // The popup script will ask for the current status
     if (message.action === 'GET_STATUS') {
         sendResponse({
             hasPending: !!pendingLogin,
-            username: pendingLogin ? pendingLogin.username : null
+            username: pendingLogin ? pendingLogin.username : null,
+            portal: pendingLogin ? pendingLogin.portal : null
         });
     }
 
@@ -43,7 +65,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({ success: true });
     }
 
-    // The GST Content Script will send this message when it's ready to fill the form
+    // The GST & IT Content Scripts will send this message when they're ready to fill the form
     if (message.action === 'GET_PENDING_CREDENTIALS') {
         if (pendingLogin) {
             // Send the credentials back to the content script
