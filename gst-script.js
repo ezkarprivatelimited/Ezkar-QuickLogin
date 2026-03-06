@@ -38,6 +38,11 @@ function fillGstForm() {
                 if (captchaInput) {
                     captchaInput.focus();
                 }
+
+                // Notify the user after a brief delay to allow the browser to paint the input values visually
+                setTimeout(() => {
+                    alert("Ezkar QuickLogin: Credentials autofilled successfully!");
+                }, 100);
             } else {
                 console.warn("Ezkar QuickLogin: Form fields not found on the page.");
                 // Sometimes the form loads dynamically. We might need to retry in a robust setup.

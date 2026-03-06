@@ -61,6 +61,11 @@ function loginFlowIT(username, password) {
                 setTimeout(() => {
                     const loginBtns = Array.from(document.querySelectorAll('button[type="submit"], button.large-button-primary'));
                     if (loginBtns.length > 0) loginBtns[loginBtns.length - 1].focus();
+
+                    // Notify the user after allowing the UI to paint
+                    setTimeout(() => {
+                        alert("Ezkar QuickLogin: Credentials autofilled successfully!");
+                    }, 1000);
                 }, 300);
             }
         }
