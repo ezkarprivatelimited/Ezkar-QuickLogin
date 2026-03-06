@@ -38,8 +38,23 @@ function loginFlowIT(username, password) {
             const pswdInput = document.querySelector('input[type="password"]');
             const authCheckbox = document.querySelector('input[type="checkbox"]');
 
-            // Wait until the password field is fully interactive
-            if (pswdInput && authCheckbox && !pswdInput.disabled && pswdInput.offsetParent !== null) {
+            // Check if this is actually an MFA/OTP screen instead of a password screen
+            // IT portal usually has text like "Select an option to authenticate" or radio buttons for OTP
+            const isOtpScreen = document.body.innerText.toLowerCase().includes('otp') ||
+                document.querySelector('input[type="radio"]') !== null;
+
+            if (isOtpScreen && !pswdInput) {
+                step = 3; // Done
+                if (observer) observer.disconnect();
+                clearTimeout(safetyTimeout);
+
+                console.warn("Ezkar QuickLogin: Detected MFA/OTP selection screen instead of a password field. Bailing out of auto-password injection.");
+                setTimeout(() => {
+                    alert("Ezkar QuickLogin: PAN inserted! This account has Extra Security (OTP) enabled. Please complete the login manually.");
+                }, 100);
+            }
+            // Wait until the password field is fully interactive for the standard flow
+            else if (pswdInput && authCheckbox && !pswdInput.disabled && pswdInput.offsetParent !== null) {
                 step = 3; // Done
 
                 if (observer) observer.disconnect();
@@ -62,7 +77,7 @@ function loginFlowIT(username, password) {
                     // Notify the user after allowing the UI to paint
                     setTimeout(() => {
                         alert("Ezkar QuickLogin: Credentials autofilled successfully! Now check the secure access message checkbox and click continue.");
-                    }, 1000);
+                    }, 500); // 500ms for safety paint
                 }, 300);
             }
         }
