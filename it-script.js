@@ -45,26 +45,23 @@ function loginFlowIT(username, password) {
                 if (observer) observer.disconnect();
                 clearTimeout(safetyTimeout);
 
-                // Check the consent box
-                authCheckbox.checked = true;
-                authCheckbox.dispatchEvent(new Event('change', { bubbles: true }));
-
                 // Insert Password
                 pswdInput.value = password;
                 pswdInput.dispatchEvent(new Event('input', { bubbles: true }));
                 pswdInput.dispatchEvent(new Event('change', { bubbles: true }));
                 pswdInput.dispatchEvent(new Event('blur', { bubbles: true }));
 
-                console.log("Ezkar QuickLogin: Injected Password and secure checkbox. Ready for manual finalization.");
+                console.log("Ezkar QuickLogin: Injected Password. User must manually confirm the secure access message checkbox.");
 
-                // Focus the login button for the user
+                // Focus the checkbox for the user to easily check it
                 setTimeout(() => {
+                    authCheckbox.focus();
                     const loginBtns = Array.from(document.querySelectorAll('button[type="submit"], button.large-button-primary'));
                     if (loginBtns.length > 0) loginBtns[loginBtns.length - 1].focus();
 
                     // Notify the user after allowing the UI to paint
                     setTimeout(() => {
-                        alert("Ezkar QuickLogin: Credentials autofilled successfully!");
+                        alert("Ezkar QuickLogin: Credentials autofilled successfully! Now check the secure access message checkbox and click continue.");
                     }, 1000);
                 }, 300);
             }
