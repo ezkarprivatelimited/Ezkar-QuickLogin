@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Ezkar QuickLogin",
-  "version": "1.0",
+  "version": "1.0.1",
   "description": "Streamlines logging into the GST portal directly from the Ezkar dashboard.",
   "icons": {
     "16": "assets/icon16.png",
@@ -10,7 +10,6 @@
     "128": "assets/icon128.png"
   },
   "permissions": [
-    "tabs",
     "storage"
   ],
   "host_permissions": [
